@@ -7,8 +7,8 @@ public class SFMetadataAnalyser {
     List<File> filesToProcess = new ArrayList<>();
 
     public static void main(String[] args) {
-//        new SFMetadataAnalyser().start();
-        new SFMetadataAnalyser().test();
+        new SFMetadataAnalyser().start();
+//        new SFMetadataAnalyser().test();
     }
 
     public void start() {
@@ -33,8 +33,9 @@ public class SFMetadataAnalyser {
                         for (String line = bRFile.readLine(); line != null; line = bRFile.readLine()) {
                             if (line.contains(field)) {
                                 String fileName = thisFile.getName();
-                                String[] ext = fileName.split(".");
-                                switch (ext[1].toLowerCase()) {
+                                int theDot = fileName.indexOf(".");
+                                String ext = fileName.substring(theDot + 1);
+                                switch (ext) {
                                     case "cls":
                                         apex = true;
                                         break;
@@ -63,7 +64,6 @@ public class SFMetadataAnalyser {
                                         template = true;
                                         break;
                                 }
-                                break;
                             }
                         }
                     }
@@ -109,9 +109,9 @@ public class SFMetadataAnalyser {
 //                processFolder(listOfFiles[i]);
 //            }
 //        }
-        String filename = "myfile.txt";
-        String[] nameSplit = filename.split(".");
-        System.out.println(nameSplit);
+//        String filename = "cat.mouse.dog";
+//        int theDot = filename.indexOf(".");
+//        String ext = filename.substring(theDot+1);
 
     }
 

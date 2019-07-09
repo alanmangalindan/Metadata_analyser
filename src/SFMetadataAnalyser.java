@@ -1,3 +1,5 @@
+package app;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -5,6 +7,8 @@ import java.util.List;
 public class SFMetadataAnalyser {
 
     List<File> filesToProcess = new ArrayList<>();
+    int fileCount = 0;
+    // int fieldCount = 0;
 
     public static void main(String[] args) {
         new SFMetadataAnalyser().start();
@@ -13,6 +17,7 @@ public class SFMetadataAnalyser {
 
     public void start() {
 
+        // specify field that contains field names here (e.g. field_names.txt)
         String file = "field_names.txt";
         String csvOutput = "Field,Used in APEX,Used in VF,Used in LX,Used in WF/PB,Used in Reports / Dashboards,Used in Template\n";
 
@@ -20,15 +25,29 @@ public class SFMetadataAnalyser {
 
         try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
 
+            // specify folder that contains metadata here
+            File folder = new File("C:\\Users\\Alan Mangalindan\\OneDrive - Davanti Consulting\\work\\EROAD\\VSCode_Projects\\Old_Legacy_FSB_Metadata");
+
+            getFilesToProcess(folder);
+            
+            System.out.println("Number of files to search: " + fileCount);
+
             for (String field = bR.readLine(); field != null; field = bR.readLine()) {
 
-                File folder = new File("C:\\Users\\Alan Mangalindan\\OneDrive - Davanti Consulting\\work\\EROAD\\VSCode_Projects\\Old_Legacy_FSB_Metadata");
-
                 csvOutput += field + ",";
+                // fieldCount++;
 
-                getFilesToProcess(folder);
+                // reset each boolen to false before searching for each field
+                apex = false;
+                vf = false;
+                lx = false;
+                wfpb = false;
+                repDash = false;
+                template = false;
+
 
                 for (File thisFile: filesToProcess) {
+                    System.out.println("Finding " + field + " in " + thisFile.getName());
                     try (BufferedReader bRFile = new BufferedReader(new FileReader(thisFile))) {
                         for (String line = bRFile.readLine(); line != null; line = bRFile.readLine()) {
                             if (line.contains(field)) {
@@ -76,6 +95,10 @@ public class SFMetadataAnalyser {
                 csvOutput += (repDash) ? "Y," : "N,";
                 csvOutput += (template) ? "Y\n" : "N\n";
 
+                // if (fieldCount == 10) {
+                //     break;
+                // }
+
             }
 
         } catch (FileNotFoundException e) {
@@ -84,11 +107,14 @@ public class SFMetadataAnalyser {
             e.printStackTrace();
         }
 
-        File saveFile = new File("results.csv");
+        String resultsFile = "results.csv";
+
+        File saveFile = new File(resultsFile);
 
         try (BufferedWriter bW = new BufferedWriter(new FileWriter(saveFile))) {
 
             bW.write(csvOutput);
+            System.out.println("Search completed. Results saved in " + resultsFile);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,7 +123,7 @@ public class SFMetadataAnalyser {
 
     }
 
-    public void test() {
+    // public void test() {
 //        File folder = new File("C:\\Users\\Alan Mangalindan\\OneDrive - Davanti Consulting\\work\\EROAD\\test_data\\4_Jul_Task_Event");
 //        File[] listOfFiles = folder.listFiles();
 //        getFilesToProcess(folder);
@@ -112,19 +138,17 @@ public class SFMetadataAnalyser {
 //        String filename = "cat.mouse.dog";
 //        int theDot = filename.indexOf(".");
 //        String ext = filename.substring(theDot+1);
-
-    }
+    // }
 
     private void getFilesToProcess(File directory) {
-        int count = 1;
         File[] filesInThisFolder = directory.listFiles();
         for (int i = 0; i < filesInThisFolder.length; i++) {
             if (filesInThisFolder[i].isFile()) {
-                System.out.println("    File: " + filesInThisFolder[i].getName() + "    count: " + count);
+                // System.out.println("    File: " + filesInThisFolder[i].getName() + "    count: " + count);
                 filesToProcess.add(filesInThisFolder[i]);
-                count++;
+                fileCount++;
             } else if (filesInThisFolder[i].isDirectory()) {
-                System.out.println("Directory: " + filesInThisFolder[i].getName());
+                // System.out.println("Directory: " + filesInThisFolder[i].getName());
                 getFilesToProcess(filesInThisFolder[i]);
             }
         }

@@ -1,0 +1,10 @@
+# IntelliJ
+# Source: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839-How-to-manage-projects-under-Version-Control-Systems
+out/
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/uiDesigner.xml
+
+# Mac OS
+**/.DS_Store
